@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>Inflation Monitoring</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+  </head>
+  <body>
+
+    <py-config>
+      packages = ["pandas", "matplotlib", "numpy"]
+    </py-config>
+
+    <py-script>
+        import js
+        import pandas as pd
+        import numpy as np
+        from io import StringIO
+        import matplotlib.pyplot as plt
+        from pyodide.ffi import create_proxy
+        
+        def plot(country, s_year, e_year):
+            df = inf_df[country].loc[inf_df[country].index.isin(range(s_year, e_year))]
+            annual_change = inf_df[country].diff().loc[inf_df[country].index.isin(range(s_year, e_year))]
+            fig, (ax1, ax2) = plt.subplots(2)
+            fig.suptitle('Overall inflation and annual change in ' + country)
+            ax1.set_ylabel("Inflation Rate")
+            ax2.set_ylabel("Annual Change")
+            ax1.plot(df.index, df.values)
+            ax2.bar(annual_change.index, annual_change.values, color=np.where(annual_change>0,"Green", "Red"))
+            display(plt, target="graph-area", append=False)
+        
+        s_year, e_year = js.document.getElementById("s_year").value, js.document.getElementById("e_year").value
+        country = js.document.getElementById("country").value
+        plot(str(country), int(s_year), int(e_year))
+        
+        
+        def get_params(event):
+            s_year, e_year = js.document.getElementById("s_year").value, js.document.getElementById("e_year").value
+            country = js.document.getElementById("country").value
+            plot(str(country), int(s_year), int(e_year))
+        
+        ele_proxy = create_proxy(get_params)
+        
+        params = js.document.getElementsByName("params")
+        for ele in params:
+            ele.addEventListener("change", ele_proxy)
+    </py-script>
+
+    <div id="input" style="margin: 20px;">
+      <h1> Pyscript Inflation Monitoring Application</h1>
+      Choose the paramters to use: <br/>
+      <input type="number" id="s_year" name="params" value=1970 min="1970" max="2022"> <br> 
+      <label for="s_year">Starting Year</label>
+      <input type="number" id="e_year" name="params" value=2022 min="1970" max="2022"> <br>
+      <label for="e_year">Ending Year</label>
+      <select class="form-control" name="params" id="country">
+            <option value="Switzerland">Switzerland</option>
+            <option value="Italy">Italy</option>
+            <option value="France">France</option>
+            <option value="United Kingdom">United Kingdom</option>        
+      </select>
+      <label for="country">Country</label>
+    </div>
+
+    <div id="graph-area"></div>
+  </body>
+</html>
