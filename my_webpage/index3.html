@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css">
+  <title>My Portfolio</title>
+  <style>
+    /* Custom CSS for Sidebar */
+    .sidebar {
+      height: 100%;
+      width: 250px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      padding: 15px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+    }
+    .sidebar a:hover {
+      color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Container for sidebar -->
+  <div id="sidebarContainer"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary" style="margin-left: 250px;">
+    <a class="navbar-brand" href="index.html">My Portfolio</a>
+  </nav>
+
+  <script>
+    // Fetch sidebar.html and insert it into the div with id "sidebarContainer"
+    fetch('sidebar.html')
+      .then(response => response.text())
+      .then(data => document.getElementById('sidebarContainer').innerHTML = data);
+  </script>
+
+  <!-- Add your other content here, and make sure to also add "margin-left: 250px;" so it doesn't overlap the sidebar -->
+
+</body>
+</html>
